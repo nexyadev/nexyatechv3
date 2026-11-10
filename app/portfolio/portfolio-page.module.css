@@ -1,0 +1,24 @@
+.section { padding-bottom: 100px; }
+.heading { display:flex; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid #ffffff20; padding:26px 0 40px; }
+.note { font-size:13px; color:#a3a7b2; }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:60px 32px; }
+.editorialNote { max-width:680px; font-size:13px; line-height:1.8; color:#959ca8; padding:35px 0 0; margin:45px 0 0; border-top:1px solid #ffffff13; }
+.back { display:inline-flex; align-items:center; gap:9px; color:#a8aebb; font-size:13px; margin-bottom:35px; }
+.caseHero { padding:150px 0 60px; }
+.caseHero h1 { font-size:clamp(52px,8vw,108px); line-height:1.04; letter-spacing:-.065em; font-weight:400; max-width:1000px; margin:24px 0; }
+.caseLead { max-width:650px; font-size:clamp(18px,2vw,23px); line-height:1.65; color:#a9afbb; }
+.imageCaption { color:#959eaf; font-size:11px; line-height:1.7; margin:15px 0 0; }
+.imageCaption a { color:#b4c5f5; text-underline-offset:3px; }
+.caseContent { display:grid; grid-template-columns:1fr 1.5fr; gap:80px; padding:90px 0; border-bottom:1px solid #ffffff18; }
+.caseContent h2 { margin:0 0 28px; font-size:clamp(28px,4vw,45px); font-weight:400; letter-spacing:-.04em; line-height:1.15; }
+.caseContent p { color:#a9afbb; line-height:1.8; }
+.detailList { list-style:none; padding:0; margin:0 0 35px; }
+.detailList li { display:flex; gap:18px; padding:19px 0; border-top:1px solid #ffffff18; line-height:1.6; color:#c2c7d1; }
+.detailList svg { flex-shrink:0; color:#8eaaff; margin-top:4px; }
+.pending { border-left:2px solid #6389ff; background:#6389ff08; padding:24px 30px; }
+.pending h3 { font-size:18px; font-weight:400; margin:0 0 12px; }
+.pending p { margin:0; font-size:14px; }
+.caseNext { display:flex; justify-content:space-between; align-items:center; gap:25px; padding:55px 0 90px; }
+.caseNext h2 { font-size:clamp(26px,4vw,42px); font-weight:400; letter-spacing:-.04em; margin:10px 0 0; }
+.nextLink { display:flex; gap:20px; align-items:center; color:#f4f4f5; text-decoration:none; }
+@media(max-width:700px) { .grid { grid-template-columns:1fr; gap:38px; } .heading { align-items:flex-start; flex-direction:column; gap:10px; } .section { padding-bottom:60px; } .caseHero { padding-top:120px; } .caseContent { grid-template-columns:1fr; gap:30px; padding:55px 0; } .caseNext { padding-bottom:60px; } .caseNext h2 { font-size:27px; } }
