@@ -10,7 +10,8 @@ export function PageTransition({ children }: { children: ReactNode }) {
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (reducedMotion || !scope.current) return;
+    // /lab has its own opening; a transform here would also re-anchor its fixed layers and shift them.
+    if (reducedMotion || !scope.current || pathname.startsWith("/lab")) return;
     const element = scope.current as HTMLDivElement;
     const animation = animate(element, { opacity: [.7, 1], y: [5, 0] }, { duration: .35, ease: "easeOut" });
     return () => {

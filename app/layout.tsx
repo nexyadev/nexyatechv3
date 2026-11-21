@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Preloader } from "@/components/animations/preloader";
+import { SiteChrome } from "@/components/layout/site-chrome";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -19,9 +20,8 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="pt-BR"><body>
     <a href="#conteudo" className="skip-link">Pular para o conteúdo</a>
-    <Preloader />
-    <Header />
+    <SiteChrome><Preloader /><Header /></SiteChrome>
     <main id="conteudo" tabIndex={-1}>{children}</main>
-    <Footer />
+    <SiteChrome><Footer /></SiteChrome>
   </body></html>;
 }
