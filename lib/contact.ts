@@ -1,36 +1,39 @@
 import { z } from "zod";
+import type { Messages } from "@/i18n/dictionaries";
 
-export const serviceOptions = [
-  "Sistema sob medida",
-  "Automações e IA",
-  "Site ou experiência digital",
-  "Integrações e correção de bugs",
-  "NEXYA Auto",
-  "Quero entender as possibilidades",
-] as const;
+/** Valores internos (estáveis entre idiomas); o rótulo exibido vem do dicionário. */
+export const serviceKeys = ["sistema", "automacao", "site", "integracao", "auto", "duvida"] as const;
+export type ServiceKey = (typeof serviceKeys)[number];
 
-export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Conte seu nome, com pelo menos 2 caracteres.").max(100, "Use até 100 caracteres."),
-  email: z.string().trim().max(254, "Use um e-mail com até 254 caracteres.").email("Informe um e-mail válido."),
-  company: z.string().trim().max(120, "Use até 120 caracteres."),
-  service: z.string().refine((value) => serviceOptions.some((option) => option === value), "Selecione a solução que faz sentido para você."),
-  message: z.string().trim().min(20, "Conte um pouco mais: use pelo menos 20 caracteres.").max(1500, "Use até 1.500 caracteres."),
-  consent: z.boolean().refine((value) => value, "Confirme que deseja compartilhar estas informações pelo WhatsApp."),
-});
+/** ?solucao=<chave da solução> pré-seleciona o serviço. */
+export const serviceBySolution: Readonly<Record<string, ServiceKey>> = { sistemas: "sistema", automacoes: "automacao", sites: "site", integracoes: "integracao" };
 
-export type ContactValues = z.infer<typeof contactSchema>;
+export function createContactSchema(errors: Messages["form"]["errors"]) {
+  return z.object({
+    name: z.string().trim().min(2, errors.nameMin).max(100, errors.nameMax),
+    email: z.string().trim().max(254, errors.emailMax).email(errors.email),
+    company: z.string().trim().max(120, errors.companyMax),
+    service: z.string().refine((value) => serviceKeys.some((key) => key === value), errors.service),
+    message: z.string().trim().min(20, errors.messageMin).max(1500, errors.messageMax),
+    consent: z.boolean().refine((value) => value, errors.consent),
+  });
+}
 
-export function buildContactMessage(values: ContactValues): string {
-  const data = contactSchema.parse(values);
+export type ContactValues = z.infer<ReturnType<typeof createContactSchema>>;
+
+/** Mensagem do WhatsApp no idioma da página. */
+export function buildContactMessage(values: ContactValues, form: Messages["form"]): string {
+  const data = createContactSchema(form.errors).parse(values);
+  const w = form.whatsapp;
   return [
-    "Olá, NEXYA! Quero conversar sobre um projeto.",
+    w.greeting,
     "",
-    `Nome: ${data.name}`,
-    `E-mail: ${data.email}`,
-    ...(data.company ? [`Empresa: ${data.company}`] : []),
-    `Interesse: ${data.service}`,
+    `${w.name}: ${data.name}`,
+    `${w.email}: ${data.email}`,
+    ...(data.company ? [`${w.company}: ${data.company}`] : []),
+    `${w.service}: ${form.services[data.service as ServiceKey]}`,
     "",
-    "Sobre o projeto:",
+    w.about,
     data.message,
   ].join("\n");
 }

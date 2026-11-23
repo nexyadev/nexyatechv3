@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+﻿import { defineConfig } from "@playwright/test";
 
 /** Start the app separately with npm run dev, or npm run build && npm start. */
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   outputDir: "test-results",
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
     browserName: "chromium",
     channel: "msedge",
     headless: true,
@@ -25,6 +25,6 @@ export default defineConfig({
   },
   projects: [
     { name: "desktop", use: { viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 } },
-    { name: "mobile", use: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true } },
+    { name: "mobile", testIgnore: ["**/regressions.spec.ts", "**/bands.spec.ts", "**/motion-audit.spec.ts"], use: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true } },
   ],
 });

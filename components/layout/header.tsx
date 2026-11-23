@@ -1,40 +1,63 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
-import { LinkFeedback } from "@/components/layout/link-feedback";
+import { ArrowUpRight, Menu, Search, X } from "lucide-react";
+import { Link, usePathname } from "@/i18n/navigation";
+import type { AppPathname } from "@/i18n/routing";
+import { whatsappHref } from "@/lib/config";
+import { useI18n } from "@/components/i18n/i18n-provider";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { openPalette } from "./command-palette";
+import { ThemeToggle } from "./theme-toggle";
+import { MotionToggle } from "./motion-toggle";
+import { darkEnabled } from "@/lib/theme";
 
-const navigation = [
-  { label: "Soluções", href: "/solucoes" },
-  { label: "NEXYA Auto", href: "/nexya-auto" },
-  { label: "Portfólio", href: "/portfolio" },
-  { label: "Sobre", href: "/sobre" },
-  { label: "Contato", href: "/contato" },
+/** Menu principal: só páginas, sem âncoras. The Office fica fora do site. */
+const navigation: { key: "home" | "solutions" | "projects" | "nexyaAuto" | "contact"; href: Exclude<AppPathname, `${string}[slug]`> }[] = [
+  { key: "home", href: "/" },
+  { key: "solutions", href: "/solucoes" },
+  { key: "projects", href: "/projetos" },
+  { key: "nexyaAuto", href: "/nexya-auto" },
+  { key: "contact", href: "/contato" },
 ];
 
+/** `pathname` é o caminho interno (ex.: /solucoes/[slug]), igual em todos os idiomas. */
+function isActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Header() {
+  const { m } = useI18n();
+  const n = m.nav;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const contact = whatsappHref(m.whatsapp.default);
+  const external = contact.startsWith("https") ? { target: "_blank", rel: "noopener noreferrer" } : {};
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    requestAnimationFrame(onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
     const original = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     menuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+    const focusables = () => [...(menuRef.current?.querySelectorAll<HTMLElement>("a, button:not([tabindex='-1'])") ?? [])];
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !event.defaultPrevented) {
         setOpen(false);
         toggleRef.current?.focus();
       }
       if (event.key === "Tab") {
-        const links = menuRef.current?.querySelectorAll<HTMLAnchorElement>("a");
-        const first = links?.[0];
-        const last = links?.[links.length - 1];
+        const items = focusables();
+        const first = items[0], last = items[items.length - 1];
         if (!event.shiftKey && document.activeElement === last) {
           event.preventDefault(); toggleRef.current?.focus();
         } else if (event.shiftKey && document.activeElement === first) {
@@ -56,27 +79,43 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="site-header">
+    <header className="site-header" data-scrolled={scrolled} data-open={open}>
       <div className="header-inner container">
-        <Link href="/" className="brand" aria-label="NEXYA Tech — início" onClick={() => setOpen(false)}>
-          <Image src="/images/logo-nexya.png" alt="NEXYA" width={174} height={58} priority sizes="174px" />
-          <span className="brand-tech">TECH</span>
+        <Link href="/" className="brand" aria-label={n.homeAria} onClick={() => setOpen(false)}>
+          {/* SVG oficial (wordmark); next/image não otimiza SVG, então <img> direto evita custo extra. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className={darkEnabled ? "logo-light" : undefined} src="/brand/nexya-wordmark.svg" alt="NEXYA" width={118} height={19} />
+          {/* Versão prata só existe no HTML quando o modo escuro está ligado (flag). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {darkEnabled && <img className="logo-dark" src="/brand/nexya-wordmark-escuro.svg" alt="NEXYA" width={118} height={19} />}
         </Link>
-        <nav className="desktop-nav" aria-label="Navegação principal">
-          {navigation.map(({ href, label }) => <Link key={href} href={href} className={pathname.startsWith(href) ? "active" : ""} aria-current={pathname.startsWith(href) ? "page" : undefined}>{label}<LinkFeedback /></Link>)}
+        <nav className="desktop-nav" aria-label={n.mainNav}>
+          {navigation.map(({ key, href }) => <Link key={key} href={href} aria-current={isActive(pathname, href) ? "page" : undefined}>{n[key]}</Link>)}
         </nav>
-        <Link href="/contato" className="header-cta" onClick={() => setOpen(false)}>Solicitar orçamento <ArrowUpRight size={15} aria-hidden="true" /><LinkFeedback /></Link>
-        <button className="menu-toggle" type="button" ref={toggleRef} aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen(!open)}>
-          {open ? <X size={23} /> : <Menu size={23} />}
-        </button>
+        <div className="header-tools">
+          <button type="button" className="search-button" onClick={openPalette} aria-label={m.palette.open} aria-haspopup="dialog">
+            <Search size={16} strokeWidth={1.4} aria-hidden="true" /><span className="search-label">{n.search}</span><kbd aria-hidden="true">Ctrl K</kbd>
+          </button>
+          <LanguageSwitcher className="header-lang" />
+          {darkEnabled && <ThemeToggle className="header-theme" />}
+          <a href={contact} className="button button-primary header-cta" {...external} onClick={() => setOpen(false)}>{n.cta} <ArrowUpRight size={15} aria-hidden="true" /></a>
+          <button className="menu-toggle" type="button" ref={toggleRef} aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? n.closeMenu : n.openMenu} onClick={() => setOpen(!open)}>
+            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
+        </div>
       </div>
       {open && <div id="mobile-menu" className="mobile-menu" ref={menuRef}>
-        <p className="eyebrow">EXPLORE A NEXYA</p>
-        <nav aria-label="Navegação móvel">
-          {navigation.map(({ href, label }, index) => <Link key={href} href={href} aria-current={pathname.startsWith(href) ? "page" : undefined} onClick={() => setOpen(false)}><span className="menu-index">0{index + 1}</span>{label}<ArrowUpRight size={21} /></Link>)}
-          <Link className="mobile-process" href="/processo" onClick={() => setOpen(false)}>Como trabalhamos <ArrowUpRight size={18} /></Link>
+        <p className="eyebrow">{n.navEyebrow}</p>
+        <nav aria-label={n.mobileNav}>
+          {navigation.map(({ key, href }, index) => <Link key={key} href={href} aria-current={isActive(pathname, href) ? "page" : undefined} onClick={() => setOpen(false)}><span className="menu-index">0{index + 1}</span>{n[key]}<ArrowUpRight size={20} aria-hidden="true" /></Link>)}
         </nav>
-        <p className="mobile-menu-caption">Ideias em movimento.<br />Tecnologia com propósito.</p>
+        <div className="mobile-menu-tools">
+          <LanguageSwitcher className="mobile-lang" />
+          {darkEnabled && <ThemeToggle />}
+          <MotionToggle />
+          <button type="button" className="search-button" onClick={() => { setOpen(false); openPalette(); }}><Search size={16} strokeWidth={1.4} aria-hidden="true" /><span>{n.search}</span></button>
+        </div>
+        <a href={contact} className="button button-primary" {...external} onClick={() => setOpen(false)}>{n.ctaLong} <ArrowUpRight size={17} aria-hidden="true" /></a>
       </div>}
     </header>
   );

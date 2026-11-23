@@ -1,0 +1,57 @@
+/* Faixa continua, SEMPRE passando de lado, em CSS puro (nao depende de JS para comecar).
+   Trilho max-content em uma linha (nowrap) com a sequencia + 1 clone; @keyframes de 0 a -50%. */
+@keyframes nx-marquee { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+.marquee { position: relative; --dur: 55s; }
+.viewport { overflow: hidden; display: grid; gap: 14px; padding-block: 8px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.row { overflow: hidden; min-width: 0; }
+.track { display: flex; flex-wrap: nowrap; width: max-content; white-space: nowrap; will-change: transform; animation: nx-marquee var(--dur) linear infinite; }
+.row:nth-child(even) .track { animation-direction: reverse; }
+.copy, .seq { display: flex; flex-wrap: nowrap; flex-shrink: 0; align-items: center; gap: 12px; }
+.copy { padding-right: 12px; }
+.copy > *, .seq > * { flex: 0 0 auto; }
+/* Pausa no hover e no foco do teclado. */
+.viewport:hover .track, .viewport:focus-within .track { animation-play-state: paused; }
+
+/* Movimento reduzido: continua passando, ~2,5x mais devagar (vence a regra global que corta animacoes). */
+:root[data-motion="reduced"] .marquee .track { animation-duration: calc(var(--dur) * 2.5) !important; animation-iteration-count: infinite !important; }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion]) .marquee .track { animation-duration: calc(var(--dur) * 2.5) !important; animation-iteration-count: infinite !important; } }
+
+/* Pausado pelo visitante: UMA linha horizontal rolavel com snap, sem duplicados (clones display:none). */
+:root[data-bands="paused"] .marquee .track { animation: none !important; transform: none !important; }
+:root[data-bands="paused"] .marquee [data-clone] { display: none !important; }
+:root[data-bands="paused"] .marquee .viewport { display: flex; flex-wrap: nowrap; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; -webkit-mask-image: none; mask-image: none; padding-inline: max(16px, calc((100% - 1320px) / 2)); scrollbar-width: thin; }
+:root[data-bands="paused"] .marquee .row, :root[data-bands="paused"] .marquee .track, :root[data-bands="paused"] .marquee .copy, :root[data-bands="paused"] .marquee .seq { display: contents; }
+:root[data-bands="paused"] .marquee .seq > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+/* Botao Pausar/Retomar: visivel, 44px, foco visivel. */
+.pauseBtn { display: grid; place-items: center; width: 44px; height: 44px; margin: 10px max(16px, calc((100% - 1320px) / 2)) 0 auto; border: 1px solid var(--line-strong); border-radius: 999px; background: rgba(var(--glass-rgb), .7); color: var(--ink); cursor: pointer; transition: background .25s var(--ease); }
+.pauseBtn:hover { background: rgba(var(--glass-rgb), 1); }
+.pauseBtn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+@media (max-width: 899px) { .viewport { gap: 10px; } }
+
+/* Pílula de tecnologia: vidro fosco claro + ícone de linha fina. */
+.pill { display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: rgba(var(--glass-rgb), .6); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2); box-shadow: var(--shadow-soft); color: var(--ink); font-size: 15px; white-space: nowrap; }
+.pill svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--ink); }
+
+.copyItem { display: inline-flex; align-items: center; }
+
+/* Faixa de projetos: nome grande em Outfit leve + miniatura. */
+.project { display: inline-flex; align-items: center; gap: 22px; padding: 10px 26px 10px 10px; border-radius: 999px; color: var(--ink); white-space: nowrap; transition: background .35s var(--ease); }
+.project:hover, .project:focus-visible { background: rgba(var(--glass-rgb), .65); }
+.thumb { position: relative; width: 112px; aspect-ratio: 16 / 10; flex-shrink: 0; overflow: hidden; border-radius: 12px; background: #0b0b0c; box-shadow: var(--shadow-soft); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; object-position: left top; transition: transform .6s var(--ease); }
+.project:hover .thumb img { transform: scale(1.06); }
+.projectName { font-family: var(--display); font-weight: 200; font-size: clamp(40px, 5vw, 76px); line-height: 1; letter-spacing: -.03em; white-space: nowrap; }
+.sep { color: var(--ink-3); font-weight: 200; font-size: 34px; padding-inline: 6px; }
+.badge { align-self: center; padding: 4px 10px; border: 1px solid var(--line-strong); border-radius: 999px; font: 500 10px/1.4 var(--label); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); }
+
+@media (max-width: 899px) {
+  .projectName { font-size: 28px; font-weight: 300; }
+  .thumb { width: 72px; border-radius: 8px; }
+  .project { gap: 14px; padding-right: 18px; }
+  .pill { font-size: 14px; padding: 8px 14px 8px 12px; }
+}
+/* movimento: reduce (estado do site + reserva sem JS) */
+:root[data-motion="reduced"] .thumb img, :root[data-motion="reduced"] .project { transition: none; }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion]) .thumb img, :root:not([data-motion]) .project { transition: none; } }

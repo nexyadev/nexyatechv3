@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
+import { useReducedMotionPref } from "@/lib/motion";
 import type { ComponentProps, PointerEvent } from "react";
 
 const MotionLink = motion.create(Link);
@@ -12,7 +13,7 @@ export function MagneticLink({ children, ...props }: MagneticLinkProps) {
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 220, damping: 24, mass: .3 });
   const springY = useSpring(y, { stiffness: 220, damping: 24, mass: .3 });
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useReducedMotionPref();
 
   function move(event: PointerEvent<HTMLAnchorElement>) {
     if (reducedMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;

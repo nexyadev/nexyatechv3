@@ -1,0 +1,127 @@
+{
+  "/": {
+    "mediana": {
+      "perf": 95,
+      "a11y": 96,
+      "bp": 100,
+      "lcp": 909
+    },
+    "rodadas": [
+      {
+        "perf": 96,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 910,
+        "tbt": 243
+      },
+      {
+        "perf": 91,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 909,
+        "tbt": 367
+      },
+      {
+        "perf": 95,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 908,
+        "tbt": 265
+      }
+    ]
+  },
+  "/pt-pt": {
+    "mediana": {
+      "perf": 98,
+      "a11y": 96,
+      "bp": 100,
+      "lcp": 909
+    },
+    "rodadas": [
+      {
+        "perf": 100,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 909,
+        "tbt": 22
+      },
+      {
+        "perf": 87,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 909,
+        "tbt": 495
+      },
+      {
+        "perf": 98,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 907,
+        "tbt": 179
+      }
+    ]
+  },
+  "/en": {
+    "mediana": {
+      "perf": 94,
+      "a11y": 96,
+      "bp": 100,
+      "lcp": 909
+    },
+    "rodadas": [
+      {
+        "perf": 99,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 909,
+        "tbt": 119
+      },
+      {
+        "perf": 94,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 909,
+        "tbt": 280
+      },
+      {
+        "perf": 84,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 907,
+        "tbt": 629
+      }
+    ]
+  },
+  "/en/projects": {
+    "mediana": {
+      "perf": 94,
+      "a11y": 100,
+      "bp": 100,
+      "lcp": 1057
+    },
+    "rodadas": [
+      {
+        "perf": 94,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 1057,
+        "tbt": 85
+      },
+      {
+        "perf": 94,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 1057,
+        "tbt": 79
+      },
+      {
+        "perf": 95,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 1058,
+        "tbt": 64
+      }
+    ]
+  },
+  "nota": "Mobile, build de produção local, 3 rodadas por página. Variação de TBT vem do ambiente local."
+}

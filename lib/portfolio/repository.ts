@@ -1,20 +1,11 @@
-import type { PortfolioSource } from "@/types/portfolio";
-import { projects } from "./projects";
+import type { Locale } from "@/i18n/routing";
+import { getLocalizedProjects } from "./projects";
 
-const localSource: PortfolioSource = {
-  async list() {
-    return projects;
-  },
-  async find(slug) {
-    return projects.find((project) => project.slug === slug);
-  },
-};
-
-// Future approved sync belongs behind this interface. Do not fetch GitHub here yet.
-export async function getProjects() {
-  return localSource.list();
+// Future approved sync belongs behind these functions. Do not fetch GitHub here yet.
+export async function getProjects(locale: Locale) {
+  return getLocalizedProjects(locale);
 }
 
-export async function getProject(slug: string) {
-  return localSource.find(slug);
+export async function getProject(locale: Locale, slug: string) {
+  return getLocalizedProjects(locale).find((project) => project.slug === slug);
 }

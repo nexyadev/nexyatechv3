@@ -1,0 +1,143 @@
+{
+  "/": {
+    "median": {
+      "perf": 97,
+      "a11y": 96,
+      "bp": 100,
+      "lcp": 909,
+      "tbt": 27
+    },
+    "runs": [
+      {
+        "perf": 97,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 909,
+        "cls": 0,
+        "tbt": 205
+      },
+      {
+        "perf": 97,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 2134,
+        "cls": 0,
+        "tbt": 25
+      },
+      {
+        "perf": 100,
+        "a11y": 96,
+        "bp": 100,
+        "lcp": 907,
+        "cls": 0,
+        "tbt": 27
+      }
+    ]
+  },
+  "/solucoes": {
+    "median": {
+      "perf": 100,
+      "a11y": 100,
+      "bp": 100,
+      "lcp": 906,
+      "tbt": 28
+    },
+    "runs": [
+      {
+        "perf": 100,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 906,
+        "cls": 0,
+        "tbt": 31
+      },
+      {
+        "perf": 100,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 907,
+        "cls": 0,
+        "tbt": 28
+      },
+      {
+        "perf": 100,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 906,
+        "cls": 0,
+        "tbt": 22
+      }
+    ]
+  },
+  "/projetos": {
+    "median": {
+      "perf": 100,
+      "a11y": 100,
+      "bp": 100,
+      "lcp": 907,
+      "tbt": 37
+    },
+    "runs": [
+      {
+        "perf": 100,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 908,
+        "cls": 0,
+        "tbt": 42
+      },
+      {
+        "perf": 100,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 907,
+        "cls": 0,
+        "tbt": 35
+      },
+      {
+        "perf": 100,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 906,
+        "cls": 0,
+        "tbt": 37
+      }
+    ]
+  },
+  "/projetos/nexya-auto": {
+    "median": {
+      "perf": 88,
+      "a11y": 100,
+      "bp": 100,
+      "lcp": 3915,
+      "tbt": 51
+    },
+    "runs": [
+      {
+        "perf": 86,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 4150,
+        "cls": 0,
+        "tbt": 91
+      },
+      {
+        "perf": 88,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 3915,
+        "cls": 0,
+        "tbt": 44
+      },
+      {
+        "perf": 88,
+        "a11y": 100,
+        "bp": 100,
+        "lcp": 3914,
+        "cls": 0,
+        "tbt": 51
+      }
+    ]
+  },
+  "nota": "Mobile, build de produção local, 3 rodadas por página. SEO omitido: robots bloqueia localhost de propósito."
+}

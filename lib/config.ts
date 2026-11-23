@@ -26,6 +26,11 @@ export const siteConfig = {
   ],
 } as const;
 
+/** Link do WhatsApp com mensagem pronta; sem número configurado, cai em /contato. */
+export function whatsappHref(message: string) {
+  return siteConfig.whatsappUrl ? `${siteConfig.whatsappUrl}?text=${encodeURIComponent(message)}` : "/contato";
+}
+
 export const contactUrl = siteConfig.whatsappUrl
   ? `${siteConfig.whatsappUrl}?text=${encodeURIComponent("Olá! Quero conversar sobre um projeto com a NEXYA Tech.")}`
   : "/contato";

@@ -1,8 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { buildContactMessage, buildContactWhatsAppUrl, contactSchema, type ContactValues } from "../lib/contact";
+import { buildContactMessage, buildContactWhatsAppUrl, createContactSchema, type ContactValues } from "../lib/contact";
+import { ptBR } from "../i18n/messages/pt-BR";
+import { en } from "../i18n/messages/en";
+import { ptPT } from "../i18n/messages/pt-PT";
 
-const valid: ContactValues = { name: "Ana Lima", email: "ana@example.com", company: "", service: "Sistema sob medida", message: "Quero organizar os processos da minha empresa.", consent: true };
+const form = ptBR.form;
+const contactSchema = createContactSchema(form.errors);
+const valid: ContactValues = { name: "Ana Lima", email: "ana@example.com", company: "", service: "sistema", message: "Quero organizar os processos da minha empresa.", consent: true };
 
 describe("contact briefing validation", () => {
   it("accepts a complete briefing and trims fields", () => {
@@ -20,17 +25,26 @@ describe("contact briefing validation", () => {
     assert.equal(contactSchema.safeParse({ ...valid, company: "a".repeat(121) }).success, false);
   });
   it("never prepares a message without valid consent", () => {
-    assert.throws(() => buildContactMessage({ ...valid, consent: false }));
+    assert.throws(() => buildContactMessage({ ...valid, consent: false }, form));
   });
   it("omits an empty optional company and includes a provided company", () => {
-    assert.equal(buildContactMessage(valid).includes("Empresa:"), false);
-    assert.match(buildContactMessage({ ...valid, company: "Oficina da Ana" }), /Empresa: Oficina da Ana/);
+    assert.equal(buildContactMessage(valid, form).includes("Empresa:"), false);
+    assert.match(buildContactMessage({ ...valid, company: "Oficina da Ana" }, form), /Empresa: Oficina da Ana/);
+  });
+  it("writes the WhatsApp message and the Zod errors in the page language", () => {
+    const english = buildContactMessage(valid, en.form);
+    assert.match(english, /^Hi, NEXYA!/);
+    assert.match(english, /Interest: Custom software/);
+    assert.match(buildContactMessage(valid, ptPT.form), /Interesse: Software à medida/);
+    const error = createContactSchema(en.form.errors).safeParse({ ...valid, email: "invalid" });
+    assert.equal(error.success, false);
+    assert.equal(error.error?.issues[0]?.message, "Enter a valid email address.");
   });
 });
 
 describe("WhatsApp handoff", () => {
   it("encodes full Portuguese text without changing its content", () => {
-    const message = buildContactMessage({ ...valid, message: "Preciso de uma solução: integração & gestão + automação." });
+    const message = buildContactMessage({ ...valid, message: "Preciso de uma solução: integração & gestão + automação." }, form);
     const href = buildContactWhatsAppUrl(message, "+55 (41) 99783-0046");
     assert.ok(href);
     const url = new URL(href);
